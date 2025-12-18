@@ -5,6 +5,9 @@ import java.util.Arrays;
 /**
  * The next point in the path must be CLOSEST to the end goal (move towards it) and the SAFEST (lowest risk value)
  * It cannot move diagonally and should not include the "fences" (zeros) in the risk calculation.
+ * It will always be moving towards (10,10) so it can be simplified to only check the risk of two ahead values.
+ * The "risk" of a point is based on the added risk values of it's following 2 points. Those risk values are based on the same (only goes one ahead unless two points contain the same risk values)
+ * This then means that decisions are based on the risk of the entire area rather than just one point. 
  */
 public class solution {
     // public static int[][] mappedGrid = inputGenerator.getTestInput();
