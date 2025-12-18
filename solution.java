@@ -1,12 +1,14 @@
 //https://stackoverflow.com/questions/19648240/the-best-way-to-print-a-java-2d-array
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * The next point in the path must be CLOSEST to the end goal (move towards it) and the SAFEST (lowest risk value)
+ * It cannot move diagonally and should not include the "fences" (zeros) in the risk calculation.
+ */
 public class solution {
-    // The point must be the closest to the goal (move towards it) & The safest (lowest risk value)
-    public static int[][] mappedGrid = inputGenerator.getTestInput();
-    // int[][] mappedGrid = inputGenerator.createInput();
+    // public static int[][] mappedGrid = inputGenerator.getTestInput();
+    public static int[][] mappedGrid = inputGenerator.createInput();
 
     public static void main(String[] args) {
 
@@ -23,7 +25,7 @@ public class solution {
             for (int i = -1; i < 2; i ++) { // Check surrounding points
                 for (int j = -1; j < 2; j ++) {
                     if (i != 0 | j != 0) { // Make sure it's not the current point (i.e [1,1])
-                        if ((i != -1 | j != -1) && (i != -1 | j != 1) && (i != 1 | j != -1) && (i != 1 | j != 1) && getDistance(firstCoord, secondCoord) > getDistance(firstCoord + i, secondCoord + j)) {
+                        if ((i != -1 | j != -1) && (i != -1 | j != 1) && (i != 1 | j != -1) && (i != 1 | j != 1) && getDistance(firstCoord, secondCoord) > getDistance(firstCoord + i, secondCoord + j)) { // Ensures it's not looking at diagonals, as it cannot move that direction.
                             if ((firstCoord + i) > 0 && (secondCoord + j) > 0 & (firstCoord + i) < 11 && (secondCoord + j) < 11) {
                                 riskVals.add(checkRisk(firstCoord + i, secondCoord + j));
                                 distVals.add(getDistance(firstCoord + i, secondCoord + j));
@@ -59,7 +61,6 @@ public class solution {
             firstCoord = Integer.parseInt(coordinatePt.get(currentCoordinateIdx).substring(0,coordinatePt.get(currentCoordinateIdx).indexOf(",")));
             secondCoord = Integer.parseInt(coordinatePt.get(currentCoordinateIdx).substring(coordinatePt.get(currentCoordinateIdx).indexOf(",")+1));
             coordinates += firstCoord + "" + secondCoord;
-            mappedGrid[firstCoord][secondCoord] = 0;
 
             currentCoordinateIdx = 0;
             coordinatePt = new ArrayList<>();
@@ -73,7 +74,16 @@ public class solution {
     }
             
 
-    public static int checkRisk(int i, int j) { // Calculates the risk value of the point and the surrounding area. Helps prevents a 'Greedy' search.
+    /**
+     * Default risk is set to incredibly high number, so inputs that are walls or should not be moved to are automatically a higher risk than the algorithm is willing to take.
+     * If it is NOT an edge case, then it adds the risk of the current position and the positions to the right and bottom of it. This generates the risk value for the area.
+     * Returns this value.
+     * The idea is to help prevent a greedy search by making it look ahead of it's moves.
+     * @param i First index (x value)
+     * @param j Second index (y value)
+     * @return
+     */
+    public static int checkRisk(int i, int j) { 
         int totalRisk = 10000;
         if (i != 0 && j != 0 && i != 11 && j != 11) {
             totalRisk = mappedGrid[i][j];
@@ -83,7 +93,15 @@ public class solution {
             return totalRisk;
     }
 
-    public static double getDistance(int i, int j) { // Find distance between point and end goal
+    /**
+     * Calculates the distance away from the end goal.
+     * Just uses the standard distance formula (sqrt(x2-x1)^2+(y2-y1)^2)
+     * Does not round because some minor changes in distance might make the path more optimal.
+     * @param i First index (x value)
+     * @param j Second index (y value)
+     * @return
+     */
+    public static double getDistance(int i, int j) {
         double distance = Math.sqrt(Math.pow((10 - i), 2) + Math.pow((10 - j), 2));
         return distance;
     }

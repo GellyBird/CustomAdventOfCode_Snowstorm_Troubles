@@ -4,7 +4,7 @@ public class inputGenerator {
       int[][] generatedArray = new int[12][12];
         for (int i = 0; i < generatedArray.length; i++) {
             for (int j = 0; j < generatedArray[0].length; j++) {
-                if (i == 0 | j == 0 | i == 10 | j == 10) {
+                if (i == 0 | j == 0 | i == 11 | j == 11) {
                     generatedArray[i][j] = 0;
                 } else{
                     generatedArray[i][j] = (int)(Math.random() * (9-1 + 1) + 1);
@@ -12,8 +12,8 @@ public class inputGenerator {
                 
             }
         }
-        generatedArray[0][0] = 1;
-        generatedArray[9][9] = 1;
+        generatedArray[1][1] = 1;
+        generatedArray[10][10] = 1;
         return generatedArray;
     }
 
